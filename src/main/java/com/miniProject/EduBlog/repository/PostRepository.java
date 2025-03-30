@@ -2,6 +2,8 @@ package com.miniProject.EduBlog.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +24,9 @@ public interface PostRepository extends MongoRepository<Post, String> {
            "{ 'category': { $regex: ?0, $options: 'i' } } " +
            "] }")
     List<Post> searchPosts(String searchTerm);
+
+    Page<Post> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    
+    @Query("{ 'title': { $regex: ?0, $options: 'i' } }")
+    Page<Post> searchByTitle(String title, Pageable pageable);
 } 
