@@ -142,19 +142,15 @@
 	    }
 	
 	    @GetMapping("/search")
-	    public ResponseEntity<Map<String, Object>> searchPosts(
-	            @RequestParam(required = false) String query,
-	            @RequestParam(defaultValue = "0") int page,
-	            @RequestParam(defaultValue = "10") int size) {
-	        try {
-	            Map<String, Object> response = postService.searchPostsWithPagination(query, page, size);
-	            return ResponseEntity.ok(response);
-	        } catch (Exception e) {
-	            Map<String, Object> errorResponse = new HashMap<>();
-	            errorResponse.put("error", "Error searching posts: " + e.getMessage());
-	            errorResponse.put("blogs", new ArrayList<>());
-	            errorResponse.put("total", 0);
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-	        }
+	    public Map<String, Object> searchPostsWithPagination(String query, int page, int size) {
+	        Pageable pageable = PageRequest.of(page, size);
+	        Page<Post> postPage = postRepository.findByTitleContainingIgnoreCase(query, pageable);
+	        
+	        Map<String, Object> response = new HashMap<>();
+	        response.put("blogs", postPage.getContent());
+	        response.put("total", postPage.getTotalElements());
+	        response.put("showing", postPage.getNumberOfElements());
+	        
+	        return response;
 	    }
 	} 
