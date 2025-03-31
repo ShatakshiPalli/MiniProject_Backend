@@ -97,12 +97,31 @@ public class PostService {
         post.setContent(postDetails.getContent());
         post.setCategory(postDetails.getCategory());
         post.setDescription(postDetails.getDescription());
-        post.setImageUrl(postDetails.getImageUrl());
         post.onUpdate();
         
         return postRepository.save(post);
     }
 
+    public void likePost(String postId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (!user.getLikedPostIds().contains(postId)) {
+            post.setLikes(post.getLikes() + 1);
+            user.getLikedPostIds().add(postId); 
+            postRepository.save(post);
+            userRepository.save(user); 
+        }
+    }
+
+    public void unlikePost(String postId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (user.getLikedPostIds().contains(postId)) {
+            post.setLikes(post.getLikes() - 1);
+            user.getLikedPostIds().remove(postId);
+            postRepository.save(post);
+            userRepository.save(user); 
+        }
+    }
+    
     public void deletePost(String id) {
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Post not found"));

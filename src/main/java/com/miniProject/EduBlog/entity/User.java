@@ -1,7 +1,9 @@
 package com.miniProject.EduBlog.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,6 +27,8 @@ public class User implements UserDetails {
 
     @JsonIgnore
     private String password;
+    
+    private List<String> likedPostIds = new ArrayList<>(); // Add this line to the User class
 
     public User() {}
 
@@ -79,7 +83,15 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getEmail() {
+    public List<String> getLikedPostIds() {
+		return likedPostIds;
+	}
+
+	public void setLikedPostIds(List<String> likedPostIds) {
+		this.likedPostIds = likedPostIds;
+	}
+
+	public String getEmail() {
         return email;
     }
 
