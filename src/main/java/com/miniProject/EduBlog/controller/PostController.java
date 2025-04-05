@@ -51,8 +51,8 @@ public class PostController {
         Post post = new Post();
         post.setTitle(postRequest.getTitle());
         post.setCategory(postRequest.getCategory());
-        post.setDescription(postRequest.getDescription());
         post.setContent(postRequest.getContent());
+        post.setDescription(postRequest.getDescription());
         post.setAuthor(user);
         post.onCreate();
         
@@ -102,8 +102,8 @@ public ResponseEntity<Post> updatePost(@PathVariable String id, @RequestBody Pos
 
     post.setTitle(postRequest.getTitle());
     post.setCategory(postRequest.getCategory());
-    post.setDescription(postRequest.getDescription());
     post.setContent(postRequest.getContent());
+    post.setDescription(postRequest.getDescription());
     post.onUpdate();
     
     Post updatedPost = postRepository.save(post);

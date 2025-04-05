@@ -83,44 +83,63 @@ public class Post {
         this.description = extractDescription(content);
     }
     public String extractDescription(String markdown) {
-        String cleanedMarkdown = markdown.replaceAll("!\\[.*?\\]\\(data:image/[^)]+\\)", ""); 
-        cleanedMarkdown = cleanedMarkdown.replaceAll("\\*\\*.*?\\*\\*", ""); 
-        cleanedMarkdown = cleanedMarkdown.replaceAll("\\*.*?\\*", ""); 
-        cleanedMarkdown = cleanedMarkdown.replaceAll("~{1,2}.*?~{1,2}", ""); 
-        cleanedMarkdown = cleanedMarkdown.replaceAll("(?m)^#{1,6}.*?$\\n?", ""); 
-        cleanedMarkdown = cleanedMarkdown.replaceAll("_{1,2}.*?_{1,2}", ""); 
+        // Clean the markdown by removing various elements
+        String cleanedMarkdown = markdown
+            .replaceAll("!\\[.*?\\]\\(data:image/[^)]+\\)", "") // Remove image links
+            .replaceAll("\\*\\*.*?\\*\\*", "") // Remove bold text
+            .replaceAll("\\*.*?\\*", "") // Remove italic text
+            .replaceAll("~{1,2}.*?~{1,2}", "") // Remove strikethrough text
+            .replaceAll("(?m)^#{1,6}.*?(\\n|$)", "") // Remove headers
+            .replaceAll("_{1,2}.*?_{1,2}", "") // Remove underlined text
+            .replaceAll("\\n{2,}", "\n\n"); // Normalize multiple newlines
 
+        // Split into paragraphs
         String[] paragraphs = cleanedMarkdown.split("\\n\\s*\\n");
-        
+
+        // Check for non-empty paragraphs
         for (String paragraph : paragraphs) {
             if (!paragraph.trim().isEmpty()) {
                 String[] words = paragraph.trim().split("\\s+");
                 StringBuilder result = new StringBuilder();
-                for (int i = 0; i < Math.min(words.length, 15); i++) {
-                    result.append(words[i]).append(" ");
+                int currentLength = 0;
+
+                for (String word : words) {
+                    if (currentLength + word.length() + 1 > 80) { // +1 for space
+                        break; // Stop if adding this word exceeds 80 characters
+                    }
+                    result.append(word).append(" ");
+                    currentLength += word.length() + 1; // Update current length
                 }
                 return result.toString().trim();
             }
         }
 
-        
+        // If no paragraphs found, check for list items
         String[] listItems = cleanedMarkdown.split("(?m)^\\s*[-*+]\\s+");
         StringBuilder listResult = new StringBuilder();
-        for (int i = 1; i < listItems.length; i++) { 
+        int currentLength = 0;
+
+        for (int i = 1; i < listItems.length; i++) { // Start from 1 to skip the split part
             String item = listItems[i].trim();
             if (!item.isEmpty()) {
                 String[] words = item.split("\\s+");
-                for (int j = 0; j < Math.min(words.length, 15); j++) {
-                    listResult.append(words[j]).append(" ");
+                for (String word : words) {
+                    if (currentLength + word.length() + 1 > 80) { // +1 for space
+                        break; // Stop if adding this word exceeds 80 characters
+                    }
+                    listResult.append(word).append(" ");
+                    currentLength += word.length() + 1; // Update current length
                 }
                 listResult.append("\n"); 
             }
         }
 
+        // If we found list items, return them
         if (listResult.length() > 0) {
             return listResult.toString().trim();
         }
 
+        // If no valid paragraphs or list items were found, return the default message
         return "No description is available.";
     }
     public User getAuthor() {
