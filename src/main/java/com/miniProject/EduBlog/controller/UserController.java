@@ -22,8 +22,8 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-	private final PostRepository postRepository;	
-	private final UserRepository userRepository;
+    private final PostRepository postRepository;	
+    private final UserRepository userRepository;
     private final UserService userService;
 
     public UserController(UserService userService, PostRepository postRepository, UserRepository userRepository) {
@@ -36,15 +36,7 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
-    
-    @GetMapping("/liked-posts")
-    public ResponseEntity<List<Post>> getLikedPosts(@AuthenticationPrincipal User user) {
-        List<Post> likedPosts = new ArrayList<>();
-        for (String postId : user.getLikedPostIds()) {
-            postRepository.findById(postId).ifPresent(likedPosts::add);
-        }
-        return ResponseEntity.ok(likedPosts);
-    }
+
     
     @GetMapping("/liked-list/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
