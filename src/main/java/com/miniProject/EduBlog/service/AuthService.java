@@ -44,7 +44,9 @@ public class AuthService implements UserDetailsService {
 
         // Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            System.out.println("Error");
             throw new IllegalArgumentException("Email already registered");
+            
         }
 
         // Create and save new user
