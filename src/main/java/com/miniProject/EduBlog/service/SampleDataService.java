@@ -285,18 +285,6 @@ public class SampleDataService implements CommandLineRunner {
         post.setContent(content);
         post.setCategory(category);
         post.setAuthor(author);
-        
-        // Set relevant image URL based on category
-        String imageUrl = switch (category) {
-            case "MATHEMATICS" -> "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=1000&auto=format&fit=crop";
-            case "SCIENCE" -> "https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=1000&auto=format&fit=crop";
-            case "PROGRAMMING" -> "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000&auto=format&fit=crop";
-            case "HISTORY" -> "https://images.unsplash.com/photo-1461360370896-922624d12aa1?q=80&w=1000&auto=format&fit=crop";
-            case "LITERATURE" -> "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=1000&auto=format&fit=crop";
-            default -> "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=1000&auto=format&fit=crop";
-        };
-        post.setImageUrl(imageUrl);
-        
         post.onCreate();
         postRepository.save(post);
     }
